@@ -3,25 +3,31 @@ const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Body = Matter.Body;
+const Render = Matter.Render;
 
-var ground;
+var dustbinObj, paperObj, groundObj;
 var bottomSide, rightSide, leftSide;
-var paper;
 
 function setup() {
-	createCanvas(1500, 700);
+	createCanvas(1600, 700);
 
 	engine = Engine.create();
 	world = engine.world;
-	ground = new Ground(width/2, height, width, 20);
+	groundObj = new ground(width/2, height, width, 20);
+	paperObj = new paper(200, 450, 70);
+	dustbinObj = new dustbin(1200, 650);
 
-	bottomSide = new BottomSide(1100, 680, 200, 20);
-	rightSide = new DustbinSide(990, 590, 20, 200);
-	leftSide = new DustbinSide(1210, 590, 20, 200);
-
-	paper = new Paper1(200, 500, 30);
-
+	var render = Render.create({
+		element: document.body,
+		engine: engine,
+		options: {
+			width: 1600,
+			height: 700,
+			wireframes: false
+		}
+	})
 	Engine.run(engine);
+	render.run(render);
 }
 
 
@@ -29,18 +35,15 @@ function draw() {
 	background(230);
 	rectMode(CENTER);
 	
-	ground.display();
+	groundObj.display();
 
-	paper.display();
-
-	bottomSide.display();
-	rightSide.display();
-	leftSide.display(); 
-
-	if(keyWentDown(UP_ARROW)){
-		Body.applyForce(paper.body, paper.body.position, {x: 85, y: -85})
-	}
-
-	drawSprites();
+	paperObj.display();
+	
+	dustbinObj.display();
 }
 
+function keyPressed(){
+	if(keyCode === UP_ARROW){
+		Matter.Body.applyForce(paperObj.body, paperObj.body.position, {x: 130, y: -145})
+	}
+}
